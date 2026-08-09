@@ -1,0 +1,608 @@
+:root {
+    --campus-green: #0b5d3b;
+    --campus-green-dark: #07452c;
+    --campus-green-light: #198754;
+    --campus-gold: #d4af37;
+    --campus-bg: #f4f6f9;
+    --campus-text: #24312b;
+    --campus-muted: #6c7a72;
+    --campus-border: #e2e9e5;
+    --campus-shadow: 0 10px 30px rgba(19, 51, 37, .08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    min-height: 100vh;
+    background: var(--campus-bg);
+    color: var(--campus-text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+a { text-decoration: none; }
+
+.wrapper { min-height: 100vh; }
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    display: flex;
+    flex-direction: column;
+    width: 270px;
+    padding: 20px 14px;
+    overflow-y: auto;
+    color: #fff;
+    background: linear-gradient(180deg, var(--campus-green-dark), var(--campus-green));
+    border-right: 3px solid var(--campus-gold);
+    z-index: 1040;
+}
+
+.sidebar::after {
+    content: "۞";
+    position: absolute;
+    right: -26px;
+    bottom: -95px;
+    color: #fff;
+    font-family: Georgia, serif;
+    font-size: 300px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: .06;
+    pointer-events: none;
+}
+
+.sidebar > * { position: relative; z-index: 1; }
+
+.sidebar-header { padding: 8px 12px 22px; text-align: center; }
+.sidebar-header .logo { width: 76px; height: 76px; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0,0,0,.2)); }
+.sidebar-header h5 { margin: 10px 0 4px; color: #fff; font-size: 1rem; letter-spacing: .08em; }
+.sidebar-header small { color: rgba(255,255,255,.78); line-height: 1.5; }
+.menu-line { height: 1px; margin: 0 8px 18px; background: linear-gradient(90deg, transparent, var(--campus-gold), transparent); }
+.menu-title { margin: 0 14px 10px; color: rgba(255,255,255,.65); font-size: .69rem; font-weight: 700; letter-spacing: .13em; }
+.menu { display: flex; flex-direction: column; gap: 6px; }
+.menu-item {
+    display: flex; align-items: center; gap: 13px; padding: 12px 14px;
+    border-radius: 12px; color: rgba(255,255,255,.88); font-weight: 600;
+    transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.menu-item i { width: 20px; font-size: 1.05rem; text-align: center; }
+.menu-item:hover { color: #fff; background: rgba(255,255,255,.12); transform: translateX(4px); }
+.menu-item.active { color: #fff; background: var(--campus-green-light); box-shadow: 0 8px 18px rgba(0,0,0,.18); }
+.logout { margin-top: auto; padding-top: 20px; }
+.logout-btn { display: block; padding: 12px 14px; color: #fff; text-align: center; border: 1px solid rgba(212,175,55,.8); border-radius: 12px; transition: .2s ease; }
+.logout-btn:hover { color: var(--campus-green-dark); background: var(--campus-gold); transform: translateY(-2px); }
+
+.main { min-height: 100vh; margin-left: 270px; }
+.page-header {
+    position: sticky; top: 0; z-index: 1020; display: flex; align-items: center;
+    justify-content: space-between; gap: 16px; min-height: 92px; padding: 18px 36px;
+    background: rgba(255,255,255,.94); border-bottom: 1px solid var(--campus-border);
+    box-shadow: 0 4px 14px rgba(20,45,34,.05); backdrop-filter: blur(12px);
+}
+.page-title { display: flex; align-items: center; gap: 11px; margin: 0; color: var(--campus-green-dark); font-size: 1.45rem; font-weight: 750; }
+.page-title i { color: var(--campus-gold); font-size: 1.3rem; }
+.page-subtitle { margin: 3px 0 0 38px; color: var(--campus-muted); font-size: .9rem; }
+.sidebar-toggle { display: none; border: 0; background: transparent; color: var(--campus-green); font-size: 1.35rem; }
+.page-content { padding: 30px 36px 44px; }
+
+.card {
+    border: 1px solid rgba(226,233,229,.9); border-radius: 16px; box-shadow: var(--campus-shadow);
+    overflow: hidden; transition: transform .2s ease, box-shadow .2s ease;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(19,51,37,.11); }
+.card-header { padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--campus-border); }
+.card-header.bg-success, .card-header.bg-primary { background: var(--campus-green) !important; border-color: var(--campus-green); }
+.card-body { padding: 20px; }
+
+.btn { border-radius: 10px; font-weight: 600; transition: transform .18s ease, box-shadow .18s ease; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 5px 12px rgba(20,45,34,.12); }
+.btn-primary, .btn-success { background-color: var(--campus-green); border-color: var(--campus-green); }
+.btn-primary:hover, .btn-success:hover { background-color: var(--campus-green-dark); border-color: var(--campus-green-dark); }
+.btn-warning { color: #3b3212; background-color: var(--campus-gold); border-color: var(--campus-gold); }
+
+.form-label { color: #33433a; font-weight: 650; }
+.form-control, .form-select, .input-group-text { border-color: var(--campus-border); border-radius: 10px; }
+.input-group > .form-control:not(:last-child), .input-group > .form-select:not(:last-child) { border-radius: 10px 0 0 10px; }
+.input-group > .btn:last-child { border-radius: 0 10px 10px 0; }
+.form-control:focus, .form-select:focus { border-color: var(--campus-green-light); box-shadow: 0 0 0 .22rem rgba(11,93,59,.13); }
+
+.table { margin-bottom: 0; color: var(--campus-text); vertical-align: middle; }
+.table > :not(caption) > * > * { padding: .78rem .8rem; border-color: #e8eeea; vertical-align: middle; }
+.table thead th, .table-dark th { color: #fff !important; background: var(--campus-green) !important; border-color: rgba(255,255,255,.14) !important; font-weight: 600; text-align: center; vertical-align: middle; }
+.table tbody tr:nth-child(even) > * { background-color: #f8fbf9; }
+.table-hover tbody tr:hover > * { background-color: #edf6f0; }
+.table-responsive { border-radius: 12px; }
+
+.stat-card .card-body { display: flex; align-items: center; gap: 16px; }
+.stat-icon { display: grid; width: 54px; height: 54px; place-items: center; flex: 0 0 54px; color: var(--campus-green); background: #eaf5ee; border-radius: 14px; font-size: 1.55rem; }
+.stat-icon.is-danger { color: #c73b45; background: #fff0f1; }
+.stat-icon.is-gold { color: #8a6810; background: #fff7dc; }
+
+.auth-page {
+    background: linear-gradient(135deg, rgba(7,69,44,.86), rgba(11,93,59,.7)), url('../images/unu.jpeg') center/cover fixed;
+}
+.auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+.auth-card { width: 100%; max-width: 450px; background: rgba(255,255,255,.91); backdrop-filter: blur(14px); }
+.auth-logo { width: 80px; height: 80px; object-fit: contain; }
+
+.alumni-page { background: linear-gradient(rgba(8,72,46,.78),rgba(8,72,46,.78)), url('../images/unu.jpeg') center/cover fixed; }
+.alumni-page .navbar { background: rgba(7,69,44,.82); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.16); }
+.alumni-page .logo { width: 55px; margin-right: 15px; }
+.alumni-page .navbar-brand { color: #fff !important; }
+.alumni-page .navbar-brand strong { font-size: 1.35rem; letter-spacing: .06em; }
+.alumni-page .navbar-brand small { color: rgba(255,255,255,.8); }
+.alumni-page .content { min-height: calc(100vh - 160px); padding: 50px 20px; }
+.alumni-page footer { padding: 16px; color: #fff; text-align: center; background: rgba(0,0,0,.18); }
+.alumni-page .card { background: rgba(255,255,255,.95); }
+.alumni-page .form-wrapper { width: 100%; max-width: 700px; margin: auto; }
+.alumni-page .btn-login { height: 52px; color: #fff; background: var(--campus-green); border: 0; border-radius: 10px; font-weight: 600; }
+.alumni-page .input-group-text { color: #fff; background: var(--campus-green); border-color: var(--campus-green); }
+
+@media (max-width: 991.98px) {
+    .sidebar { transform: translateX(-100%); transition: transform .25s ease; }
+    body.sidebar-open .sidebar { transform: translateX(0); box-shadow: 16px 0 32px rgba(0,0,0,.2); }
+    .main { margin-left: 0; }
+    .page-header { min-height: 76px; padding: 14px 20px; }
+    .page-content { padding: 22px 20px 34px; }
+    .sidebar-toggle { display: inline-flex; }
+}
+
+@media (max-width: 575.98px) {
+    .page-title { font-size: 1.2rem; }
+    .page-subtitle { margin-left: 0; font-size: .82rem; }
+    .page-header { align-items: flex-start; }
+    .card-body { padding: 16px; }
+}
+
+/* Kuesioner alumni: penyesuaian khusus layar mobile. */
+@media (max-width: 768px) {
+    .alumni-page {
+        overflow-x: hidden;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-navigation {
+        display: flex;
+        gap: 12px;
+        justify-content: stretch !important;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-navigation > .btn,
+    .alumni-page .form-wrapper .questionnaire-navigation > a.btn,
+    .alumni-page .form-wrapper .questionnaire-navigation > button.btn {
+        display: inline-flex;
+        flex: 1 1 0;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-width: 0;
+        min-height: 52px;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        border: 1px solid #dfe8e2;
+        border-radius: 8px;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table {
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table th,
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table td {
+        width: auto;
+        min-width: 72px;
+        padding: 12px 10px;
+        vertical-align: middle;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table th:first-child,
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table td:first-child {
+        width: 260px;
+        min-width: 260px;
+        white-space: normal;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-competency-table {
+        width: 1060px;
+        min-width: 1060px;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-competency-table .questionnaire-header tr:first-child th:nth-child(2),
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-competency-table .questionnaire-header tr:first-child th:nth-child(3) {
+        width: 400px;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-methods-table {
+        width: 620px;
+        min-width: 620px;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-methods-table th:not(:first-child),
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-methods-table td:not(:first-child) {
+        width: 72px;
+        min-width: 72px;
+        max-width: 72px;
+        white-space: normal;
+        line-height: 1.3;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table .questionnaire-header tr {
+        height: 52px;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table .questionnaire-header th {
+        min-height: 52px;
+        padding: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 1.3;
+        background-color: var(--campus-green);
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table .questionnaire-header tr:first-child th {
+        z-index: 3;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table .questionnaire-header tr:nth-child(2) th {
+        top: 52px;
+        z-index: 3;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table .questionnaire-mobile-label {
+        text-align: left;
+        white-space: normal;
+        line-height: 1.45;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table td:not(:first-child) {
+        text-align: center;
+    }
+
+    .alumni-page .form-wrapper .questionnaire-scroll-table .questionnaire-rating-table input[type="radio"] {
+        margin: 0;
+        vertical-align: middle;
+    }
+}
+
+/* =========================================================
+ALUMNI LOGIN RESPONSIVE
+   ========================================================= */
+
+.login-content {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+}
+
+.login-content > .container {
+    width: 100%;
+}
+
+.login-content .card {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.login-content .card-body {
+    padding: 40px !important;
+}
+
+.login-content img {
+    max-width: 95px;
+    height: auto;
+}
+
+
+/* =========================================================
+    TABLET
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    html,
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .login-content {
+        min-height: 100svh;
+        padding: 20px 15px;
+    }
+
+    .login-content .container {
+        max-width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .login-content .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .login-content .card {
+        width: 100%;
+        max-width: 480px;
+        margin: auto;
+        border-radius: 16px;
+    }
+
+    .login-content .card-body {
+        padding: 30px 24px !important;
+    }
+
+    .login-content img {
+        width: 75px !important;
+        max-width: 75px !important;
+        height: auto !important;
+    }
+
+    .login-content h2 {
+        font-size: 1.6rem;
+    }
+
+    .login-content .form-control,
+    .login-content .input-group-text {
+        min-height: 48px;
+    }
+
+    .login-content .btn-login {
+        min-height: 50px;
+    }
+}
+
+
+/* =========================================================
+HP
+   ========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .login-content {
+        padding: 16px;
+    }
+
+    .login-content .card {
+        max-width: 100%;
+        border-radius: 14px;
+    }
+
+    .login-content .card-body {
+        padding: 25px 18px !important;
+    }
+
+    .login-content img {
+        width: 68px !important;
+        max-width: 68px !important;
+    }
+
+    .login-content h2 {
+        font-size: 1.4rem;
+    }
+
+    .login-content p {
+        font-size: 0.85rem;
+    }
+
+    .login-content label {
+        font-size: 0.9rem;
+    }
+
+    .login-content .form-control {
+        font-size: 16px;
+    }
+
+    .login-content small {
+        font-size: 0.75rem;
+    }
+}
+
+/* =========================================================
+ALUMNI DASHBOARD RESPONSIVE
+   ========================================================= */
+
+/* Navbar alumni */
+.alumni-page .navbar .container {
+    width: 100%;
+}
+
+.alumni-page .navbar-brand {
+    min-width: 0;
+}
+
+.alumni-page .brand-text {
+    min-width: 0;
+}
+
+
+/* =========================================================
+TABLET
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .alumni-page .navbar {
+        padding: 10px 0;
+    }
+
+    .alumni-page .navbar .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .alumni-page .logo {
+        width: 48px;
+        height: auto;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    .alumni-page .navbar-brand {
+        width: 100%;
+        white-space: normal;
+    }
+
+    .alumni-page .navbar-brand strong {
+        font-size: 1.05rem;
+    }
+
+    .alumni-page .navbar-brand small {
+        display: block;
+        font-size: 0.75rem;
+        line-height: 1.3;
+        white-space: normal;
+    }
+
+    .alumni-page .content {
+        width: 100%;
+        padding: 28px 16px;
+    }
+
+    .alumni-page .form-wrapper {
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .alumni-page .form-wrapper .card {
+        width: 100%;
+    }
+
+    .alumni-page .form-wrapper .card-header {
+        padding: 18px !important;
+    }
+
+    .alumni-page .form-wrapper .card-header h2 {
+        font-size: 1.45rem;
+    }
+
+    .alumni-page .form-wrapper .card-body {
+        padding: 20px !important;
+    }
+}
+
+
+/* =========================================================
+HP
+   ========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .alumni-page {
+        background-attachment: scroll;
+    }
+
+    .alumni-page .navbar {
+        padding: 8px 0;
+    }
+
+    .alumni-page .navbar .container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .alumni-page .logo {
+        width: 42px;
+        margin-right: 10px;
+    }
+
+    .alumni-page .navbar-brand strong {
+        font-size: 0.95rem;
+        letter-spacing: 0.03em;
+    }
+
+    .alumni-page .navbar-brand small {
+        font-size: 0.65rem;
+        line-height: 1.25;
+    }
+
+    .alumni-page .content {
+        min-height: calc(100vh - 140px);
+        padding: 20px 12px;
+    }
+
+    .alumni-page .form-wrapper {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .alumni-page .form-wrapper .card {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 14px;
+    }
+
+    .alumni-page .form-wrapper .card-header {
+        padding: 16px !important;
+    }
+
+    .alumni-page .form-wrapper .card-header h2 {
+        font-size: 1.2rem;
+        line-height: 1.3;
+    }
+
+    .alumni-page .form-wrapper .card-body {
+        padding: 15px !important;
+    }
+
+    /* Tabel data alumni dan ringkasan selain tabel penilaian kuesioner */
+    .alumni-page .form-wrapper .table:not(.questionnaire-rating-table) {
+        width: 100%;
+        font-size: 0.85rem;
+    }
+
+    .alumni-page .form-wrapper .table:not(.questionnaire-rating-table) th {
+        width: 38% !important;
+        white-space: normal;
+    }
+
+    .alumni-page .form-wrapper .table:not(.questionnaire-rating-table) td,
+    .alumni-page .form-wrapper .table:not(.questionnaire-rating-table) th {
+        padding: 10px 8px;
+        word-break: break-word;
+    }
+
+    /* Alert */
+    .alumni-page .form-wrapper .alert {
+        font-size: 0.85rem;
+        padding: 12px;
+    }
+
+    /* Tombol */
+    .alumni-page .form-wrapper .d-flex {
+        justify-content: stretch !important;
+    }
+
+    .alumni-page .form-wrapper .d-flex > a,
+    .alumni-page .form-wrapper .d-flex > form {
+        flex: 1 1 auto;
+    }
+
+    .alumni-page .form-wrapper .d-flex > a,
+    .alumni-page .form-wrapper .d-flex > form .btn {
+        width: 100%;
+    }
+
+    .alumni-page footer {
+        padding: 12px 15px;
+        font-size: 0.75rem;
+        line-height: 1.5;
+    }
+}
