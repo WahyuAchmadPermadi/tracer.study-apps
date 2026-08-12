@@ -109,8 +109,9 @@
 
                 </div>
 
+
                 {{-- Mulai mencari kerja --}}
-                <div class="mb-4">
+                <div class="mb-4 pekerjaan-section">
 
                     <label class="form-label fw-semibold">
                         Kapan Anda mulai mencari pekerjaan?
@@ -132,8 +133,9 @@
 
                 </div>
 
+
                 {{-- Pekerjaan pertama --}}
-                <div class="mb-4">
+                <div class="mb-4 pekerjaan-section">
 
                     <label class="form-label fw-semibold">
                         Kapan Anda mendapatkan pekerjaan pertama?
@@ -155,8 +157,9 @@
 
                 </div>
 
+
                 {{-- Pendapatan --}}
-                <div class="mb-4">
+                <div class="mb-4 pekerjaan-section">
 
                     <label class="form-label fw-semibold">
                         Berapa rata-rata pendapatan Anda per bulan?
@@ -179,6 +182,8 @@
 
                 </div>
 
+
+                {{-- Navigasi --}}
                 <div class="d-flex justify-content-between questionnaire-navigation">
 
                     <a href="{{ route('kuesioner.halaman1') }}"
@@ -199,5 +204,58 @@
     </div>
 
 </div>
+
+
+{{-- Script untuk status Melanjutkan Pendidikan --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const statusInputs = document.querySelectorAll('input[name="status"]');
+    const pekerjaanSections = document.querySelectorAll('.pekerjaan-section');
+
+    function togglePekerjaan() {
+
+        const selected = document.querySelector('input[name="status"]:checked');
+
+        if (!selected) {
+            return;
+        }
+
+        const melanjutkanPendidikan =
+            selected.value === 'Melanjutkan Pendidikan';
+
+        pekerjaanSections.forEach(function (section) {
+
+            // Sembunyikan pertanyaan pekerjaan
+            // jika memilih Melanjutkan Pendidikan
+            section.style.display = melanjutkanPendidikan ? 'none' : '';
+
+            const inputs = section.querySelectorAll('input');
+
+            inputs.forEach(function (input) {
+
+                // Tidak aktif ketika melanjutkan pendidikan
+                input.disabled = melanjutkanPendidikan;
+
+                // Tidak wajib ketika melanjutkan pendidikan
+                input.required = !melanjutkanPendidikan;
+
+            });
+
+        });
+    }
+
+    // Jalankan ketika status diubah
+    statusInputs.forEach(function (input) {
+
+        input.addEventListener('change', togglePekerjaan);
+
+    });
+
+    // Jalankan saat halaman pertama kali dibuka
+    togglePekerjaan();
+
+});
+</script>
 
 @endsection
