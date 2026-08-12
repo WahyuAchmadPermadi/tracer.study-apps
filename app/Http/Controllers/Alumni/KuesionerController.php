@@ -153,7 +153,7 @@ class KuesionerController extends Controller
 
     public function simpanHalaman4(Request $request)
     {
-        $this->jawabanTracer()->update($request->only([
+        $data = $request->only([
             'studi_lanjut',
             'sumber_biaya',
             'nama_pt',
@@ -161,8 +161,16 @@ class KuesionerController extends Controller
             'tanggal_masuk',
             'hubungan_bidang',
             'tingkat_pendidikan',
-        ]));
-
+        ]);
+    
+        // Input type="month" menghasilkan YYYY-MM,
+        // sedangkan database DATE membutuhkan YYYY-MM-DD.
+        if (!empty($data['tanggal_masuk'])) {
+            $data['tanggal_masuk'] .= '-01';
+        }
+    
+        $this->jawabanTracer()->update($data);
+    
         return redirect()->route('kuesioner.halaman5');
     }
 
