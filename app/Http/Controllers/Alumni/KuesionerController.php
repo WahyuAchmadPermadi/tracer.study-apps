@@ -69,26 +69,43 @@ class KuesionerController extends Controller
 
         return view('alumni.kuesioner.halaman2', compact('alumni', 'jawaban'));
     }
-
     public function simpanHalaman2(Request $request)
     {
-        $data = $request->only([
-            'status',
-            'mulai_mencari_kerja',
-            'pekerjaan_pertama',
-            'pendapatan',
+        $request->validate([
+            'status' => 'required',
         ]);
-
-        if (!empty($data['mulai_mencari_kerja'])) {
-            $data['mulai_mencari_kerja'] .= '-01';
+    
+        $data = [
+            'status' => $request->status,
+        ];
+    
+        // Jika melanjutkan pendidikan,
+        // data pekerjaan tidak diperlukan.
+        if ($request->status === 'Melanjutkan Pendidikan') {
+    
+            $data['mulai_mencari_kerja'] = null;
+            $data['pekerjaan_pertama'] = null;
+            $data['pendapatan'] = null;
+    
+            $this->jawabanTracer()->update($data);
+    
+            return redirect()->route('kuesioner.halaman4');
         }
-
-        if (!empty($data['pekerjaan_pertama'])) {
-            $data['pekerjaan_pertama'] .= '-01';
-        }
-
+    
+        // Untuk status selain melanjutkan pendidikan,
+        // simpan data pekerjaan seperti biasa.
+        $data['mulai_mencari_kerja'] = $request->mulai_mencari_kerja
+            ? $request->mulai_mencari_kerja . '-01'
+            : null;
+    
+        $data['pekerjaan_pertama'] = $request->pekerjaan_pertama
+            ? $request->pekerjaan_pertama . '-01'
+            : null;
+    
+        $data['pendapatan'] = $request->pendapatan;
+    
         $this->jawabanTracer()->update($data);
-
+    
         return redirect()->route('kuesioner.halaman3');
     }
 
