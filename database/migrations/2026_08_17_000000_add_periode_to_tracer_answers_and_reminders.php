@@ -26,7 +26,7 @@ return new class extends Migration
         if (!$this->foreignKeyExists('jawaban_tracer', 'jawaban_tracer_id_periode_foreign')) {
             Schema::table('jawaban_tracer', function (Blueprint $table) {
                 $table->foreign('id_periode')
-                    ->references('id')
+                    ->references('id_periode')
                     ->on('periode_tracers')
                     ->nullOnDelete();
             });
@@ -93,7 +93,7 @@ return new class extends Migration
         ) {
             Schema::table('reminders', function (Blueprint $table) {
                 $table->foreign('id_periode')
-                    ->references('id')
+                    ->references('id_periode')
                     ->on('periode_tracers')
                     ->nullOnDelete();
             });
@@ -119,7 +119,7 @@ return new class extends Migration
         ) {
             Schema::table('reminder_logs', function (Blueprint $table) {
                 $table->foreign('id_periode')
-                    ->references('id')
+                    ->references('id_periode')
                     ->on('periode_tracers')
                     ->nullOnDelete();
             });
