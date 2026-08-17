@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Jawaban Tracer')
+@section('title', 'Detail Hasil Tracer Study')
 
 @section('content')
 
@@ -10,7 +10,7 @@
 
         <div>
             <h2 class="fw-bold mb-1">
-                Detail Jawaban Tracer
+                Detail Hasil Tracer Study
             </h2>
 
             <p class="text-muted mb-0">

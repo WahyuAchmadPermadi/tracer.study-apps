@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class AlumniImport implements OnEachRow, WithHeadingRow
 {
@@ -39,7 +38,7 @@ class AlumniImport implements OnEachRow, WithHeadingRow
                 'nim' => 'required',
                 'nama' => 'required',
                 'tanggal_lahir' => 'required',
-                'kode_program_studi' => ['nullable', Rule::in(array_keys(Alumni::PROGRAM_STUDIS))],
+                'kode_program_studi' => 'nullable',
                 'program_studi' => 'required_without:kode_program_studi',
                 'tahun_lulus' => 'required|numeric',
                 'email' => 'required|email',
@@ -79,6 +78,8 @@ class AlumniImport implements OnEachRow, WithHeadingRow
             $data['program_studi'] ?? null
         );
 
+        $noHp = Alumni::normalizeNoHp($data['no_hp']);
+
         // cari alumni berdasarkan nim
         $alumni = Alumni::where('nim', $data['nim'])->first();
 
@@ -99,7 +100,7 @@ class AlumniImport implements OnEachRow, WithHeadingRow
             ...$programStudi,
             'tahun_lulus' => $data['tahun_lulus'],
             'email' => $data['email'],
-            'no_hp' => $data['no_hp'],
+            'no_hp' => $noHp,
         ];
 
         if ($alumni) {

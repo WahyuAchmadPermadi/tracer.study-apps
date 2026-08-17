@@ -7,6 +7,7 @@ use App\Models\Alumni;
 use App\Models\Reminder;
 use App\Models\ReminderLog;
 use App\Models\ReminderSettingLog;
+use App\Models\PeriodeTracer;
 use App\Services\ReminderService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -18,6 +19,7 @@ class ReminderController extends Controller
     {
         $reminder = Reminder::first() ?? new Reminder($this->defaultReminderAttributes());
         $tahunLulusOptions = $this->tahunLulusOptions();
+        $periodeOptions = PeriodeTracer::query()->orderByDesc('tahun')->get();
         $status = request('status');
         $search = trim((string) request('search', ''));
 
@@ -46,6 +48,7 @@ class ReminderController extends Controller
         return view('admin.reminder.index', compact(
             'reminder',
             'tahunLulusOptions',
+            'periodeOptions',
             'logs',
             'settingLogs',
             'status',
@@ -74,6 +77,7 @@ class ReminderController extends Controller
             'start_date' => $reminder->start_date,
             'send_time' => $reminder->send_time,
             'tahun_lulus' => $reminder->tahun_lulus,
+            'id_periode' => $reminder->id_periode,
             'message' => $reminder->message,
             'saved_at' => now(),
         ]);
@@ -133,6 +137,7 @@ class ReminderController extends Controller
         $rules = [
             'media' => ['required', Rule::in(['email'])],
             'tahun_lulus' => ['nullable', Rule::in($this->tahunLulusOptions()->all())],
+            'id_periode' => ['nullable', Rule::exists('periode_tracers', 'id_periode')],
         ];
 
         if ($isScheduled) {
@@ -149,6 +154,7 @@ class ReminderController extends Controller
             'is_active' => $isScheduled,
             'media' => 'email',
             'tahun_lulus' => $data['tahun_lulus'] ?? null,
+            'id_periode' => $data['id_periode'] ?? null,
             'start_date' => $isScheduled ? $data['start_date'] : null,
             'send_time' => $isScheduled ? $data['send_time'] : null,
             'frequency' => $isScheduled ? $data['frequency'] : null,

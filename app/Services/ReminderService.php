@@ -13,8 +13,11 @@ class ReminderService
     public function send(Reminder $reminder, string $source = 'manual'): array
     {
         $alumnis = Alumni::query()
-            ->whereDoesntHave('jawabanTracer', function ($query) {
+            ->whereDoesntHave('jawabanTracers', function ($query) use ($reminder) {
                 $query->whereNotNull('submitted_at');
+                if ($reminder->id_periode) {
+                    $query->where('id_periode', $reminder->id_periode);
+                }
             })
             ->when($reminder->tahun_lulus, function ($query, $tahunLulus) {
                 $query->where('tahun_lulus', $tahunLulus);
@@ -31,6 +34,7 @@ class ReminderService
             $message = "Reminder Pengisian Tracer Study untuk {$alumni->nama} ({$alumni->nim}).";
             $logData = [
                 'reminder_id' => $reminder->exists ? $reminder->id : null,
+                'id_periode' => $reminder->id_periode,
                 'nim' => $alumni->nim,
                 'nama_alumni' => $alumni->nama,
                 'media' => 'email',
@@ -77,7 +81,7 @@ class ReminderService
         return $summary;
     }
 
-    public function hasScheduledSendInCurrentPeriod(string $frequency): bool
+    public function hasScheduledSendInCurrentPeriod(string $frequency, ?int $idPeriode = null): bool
     {
         $now = now();
 
@@ -89,6 +93,7 @@ class ReminderService
 
         return ReminderLog::query()
             ->where('source', 'scheduled')
+            ->when($idPeriode, fn ($query) => $query->where('id_periode', $idPeriode))
             ->whereBetween('sent_at', [$start, $end])
             ->exists();
     }

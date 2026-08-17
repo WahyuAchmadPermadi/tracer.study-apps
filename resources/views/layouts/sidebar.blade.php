@@ -58,13 +58,22 @@
 
     </a>
 
+    <a href="{{ route('program-studi.index') }}"
+        class="menu-item {{ request()->is('admin/program-studi*') ? 'active' : '' }}">
+
+        <i class="bi bi-mortarboard-fill"></i>
+
+        <span>Program Studi</span>
+
+    </a>
+
 
     <a href="{{ route('admin.jawaban-tracer.index') }}"
     class="menu-item {{ request()->routeIs('admin.jawaban-tracer.*') ? 'active' : '' }}">
 
         <i class="bi bi-journal-check"></i>
 
-        <span>Jawaban Tracer</span>
+        <span>Hasil Tracer Study</span>
 
     </a>
 

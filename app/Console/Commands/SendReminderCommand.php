@@ -68,7 +68,7 @@ class SendReminderCommand extends Command
                 break;
         }
 
-        if ($reminderService->hasScheduledSendInCurrentPeriod($reminder->frequency)) {
+        if ($reminderService->hasScheduledSendInCurrentPeriod($reminder->frequency, $reminder->id_periode)) {
 
             $this->info('Reminder terjadwal sudah diproses untuk periode ini.');
 

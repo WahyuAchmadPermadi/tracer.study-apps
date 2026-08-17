@@ -22,6 +22,11 @@ class PeriodeTracer extends Model
         return $this->hasMany(Jawaban::class, 'id_periode', 'id_periode');
     }
 
+    public function jawabanTracers()
+    {
+        return $this->hasMany(JawabanTracer::class, 'id_periode', 'id_periode');
+    }
+
     public function reminders()
     {
         return $this->hasMany(Reminder::class, 'id_periode', 'id_periode');

@@ -12,6 +12,7 @@ class JawabanTracer extends Model
 
     protected $fillable = [
         'nim',
+        'id_periode',
 
         // Identitas
         'whatsapp',
@@ -97,5 +98,10 @@ class JawabanTracer extends Model
     public function alumni()
     {
         return $this->belongsTo(Alumni::class, 'nim', 'nim');
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(PeriodeTracer::class, 'id_periode', 'id_periode');
     }
 }

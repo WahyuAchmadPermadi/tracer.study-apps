@@ -8,6 +8,7 @@ class ReminderLog extends Model
 {
     protected $fillable = [
         'reminder_id',
+        'id_periode',
         'nim',
         'nama_alumni',
         'media',

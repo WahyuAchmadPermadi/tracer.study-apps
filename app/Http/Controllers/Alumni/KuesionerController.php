@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Alumni;
 use App\Models\JawabanTracer;
+use App\Models\PeriodeTracer;
 
 class KuesionerController extends Controller
 {
@@ -17,8 +18,13 @@ class KuesionerController extends Controller
     {
         $alumni = Alumni::findOrFail(session('alumni_nim'));
 
+        $periode = PeriodeTracer::query()
+            ->where('status', 'Aktif')
+            ->orderByDesc('tahun')
+            ->first();
+
         return JawabanTracer::firstOrCreate(
-            ['nim' => $alumni->nim],
+            ['nim' => $alumni->nim, 'id_periode' => $periode?->id_periode],
             [
                 'whatsapp' => $alumni->no_hp,
             ]

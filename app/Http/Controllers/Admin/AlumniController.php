@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Alumni;
+use App\Models\ProgramStudi;
 
 class AlumniController extends Controller
 {
@@ -29,7 +30,7 @@ class AlumniController extends Controller
 
     public function create()
     {
-        $programStudis = Alumni::PROGRAM_STUDIS;
+        $programStudis = ProgramStudi::aktif()->orderBy('nama_program_studi')->pluck('nama_program_studi', 'kode_program_studi');
 
         return view('admin.alumni.create', compact('programStudis'));
     }
@@ -40,10 +41,10 @@ class AlumniController extends Controller
             'nim' => 'required|unique:alumnis,nim',
             'nama' => 'required',
             'tanggal_lahir' => 'required',
-            'kode_program_studi' => ['required', Rule::in(array_keys(Alumni::PROGRAM_STUDIS))],
+            'kode_program_studi' => ['required', Rule::exists('program_studis', 'kode_program_studi')->where('status', 'Aktif')],
             'tahun_lulus' => 'required',
             'email' => 'required|email',
-            'no_hp' => 'required',
+            'no_hp' => ['required', 'regex:/^8\d{7,12}$/'],
         ]);
 
         Alumni::create([
@@ -53,7 +54,7 @@ class AlumniController extends Controller
             ...Alumni::resolveProgramStudi($request->kode_program_studi),
             'tahun_lulus' => $request->tahun_lulus,
             'email' => $request->email,
-            'no_hp' => $request->no_hp,
+            'no_hp' => Alumni::normalizeNoHp($request->no_hp),
         ]);
 
         return redirect('/admin/alumni')
@@ -63,7 +64,7 @@ class AlumniController extends Controller
     public function edit($nim)
     {
         $alumni = Alumni::findOrFail($nim);
-        $programStudis = Alumni::PROGRAM_STUDIS;
+        $programStudis = ProgramStudi::aktif()->orderBy('nama_program_studi')->pluck('nama_program_studi', 'kode_program_studi');
 
         return view('admin.alumni.edit', compact('alumni', 'programStudis'));
     }//
@@ -73,10 +74,10 @@ class AlumniController extends Controller
         $request->validate([
             'nama' => 'required',
             'tanggal_lahir' => 'required',
-            'kode_program_studi' => ['required', Rule::in(array_keys(Alumni::PROGRAM_STUDIS))],
+            'kode_program_studi' => ['required', Rule::exists('program_studis', 'kode_program_studi')->where('status', 'Aktif')],
             'tahun_lulus' => 'required',
             'email' => 'required|email',
-            'no_hp' => 'required',
+            'no_hp' => ['required', 'regex:/^8\d{7,12}$/'],
         ]);
 
         $alumni = Alumni::findOrFail($nim);
@@ -87,7 +88,7 @@ class AlumniController extends Controller
             ...Alumni::resolveProgramStudi($request->kode_program_studi),
             'tahun_lulus' => $request->tahun_lulus,
             'email' => $request->email,
-            'no_hp' => $request->no_hp,
+            'no_hp' => Alumni::normalizeNoHp($request->no_hp),
         ]);
 
         return redirect('/admin/alumni')

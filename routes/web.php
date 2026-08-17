@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\JawabanTracerController;
 use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\SummaryController;
+use App\Http\Controllers\Admin\ProgramStudiController;
 
 use App\Http\Controllers\Alumni\AuthController as AlumniAuthController;
 use App\Http\Controllers\Alumni\DashboardController as AlumniDashboardController;
@@ -49,6 +50,10 @@ Route::prefix('admin')
         */
 
         Route::resource('alumni', AlumniController::class);
+
+        Route::resource('program-studi', ProgramStudiController::class)->except('show', 'destroy');
+        Route::patch('/program-studi/{programStudi}/toggle', [ProgramStudiController::class, 'toggle'])
+            ->name('program-studi.toggle');
 
         /*
         |--------------------------------------------------------------------------

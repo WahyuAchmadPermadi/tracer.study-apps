@@ -14,6 +14,7 @@ class Reminder extends Model
         'send_time',
         'start_date',
         'tahun_lulus',
+        'id_periode',
         'message',
     ];
 
@@ -25,5 +26,10 @@ class Reminder extends Model
     public function settingLogs()
     {
         return $this->hasMany(ReminderSettingLog::class);
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(PeriodeTracer::class, 'id_periode', 'id_periode');
     }
 }

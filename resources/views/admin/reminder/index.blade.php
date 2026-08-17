@@ -7,6 +7,7 @@
 @php
     $jadwalAktif = (bool) old('is_active', $reminder->is_active);
     $tahunLulusTerpilih = old('tahun_lulus', $reminder->tahun_lulus);
+    $periodeTerpilih = old('id_periode', $reminder->id_periode);
 @endphp
 
 @if(session('success'))
@@ -43,6 +44,16 @@
             </div>
 
             <div class="row">
+                <div class="col-md-4 mb-4">
+                    <label for="id_periode" class="form-label fw-bold">Periode Tracer Study</label>
+                    <select name="id_periode" id="id_periode" class="form-select @error('id_periode') is-invalid @enderror">
+                        <option value="">Semua Periode</option>
+                        @foreach($periodeOptions as $periode)
+                            <option value="{{ $periode->id_periode }}" @selected((string) $periodeTerpilih === (string) $periode->id_periode)>{{ $periode->tahun }}</option>
+                        @endforeach
+                    </select>
+                    @error('id_periode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
                 <div class="col-md-4 mb-4">
                     <label for="tahun_lulus" class="form-label fw-bold">Tahun Lulus</label>
                     <select name="tahun_lulus" id="tahun_lulus" class="form-select @error('tahun_lulus') is-invalid @enderror">

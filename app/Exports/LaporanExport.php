@@ -19,6 +19,7 @@ class LaporanExport implements FromArray, WithStyles, WithEvents
     protected $tahun;
     protected $prodi;
     protected $status;
+    protected $idPeriode;
 
     protected $headerRow = 1;
     protected $dataRow = 1;
@@ -28,11 +29,13 @@ class LaporanExport implements FromArray, WithStyles, WithEvents
     public function __construct(
         $tahun = null,
         $prodi = null,
-        $status = null
+        $status = null,
+        $idPeriode = null
     ) {
         $this->tahun = $tahun;
         $this->prodi = $prodi;
         $this->status = $status;
+        $this->idPeriode = $idPeriode;
     }
 
     public function array(): array
@@ -43,7 +46,12 @@ class LaporanExport implements FromArray, WithStyles, WithEvents
         |--------------------------------------------------------------------------
         */
 
-        $query = Alumni::with('jawabanTracer');
+        $jawabanScope = function ($query) {
+            if ($this->idPeriode) {
+                $query->where('id_periode', $this->idPeriode);
+            }
+        };
+        $query = Alumni::with(['jawabanTracer' => $jawabanScope]);
 
         if ($this->tahun) {
             $query->where('tahun_lulus', $this->tahun);
@@ -63,6 +71,7 @@ class LaporanExport implements FromArray, WithStyles, WithEvents
 
             $query->whereHas('jawabanTracer', function ($q) {
                 $q->whereNotNull('submitted_at');
+                if ($this->idPeriode) $q->where('id_periode', $this->idPeriode);
             });
 
         } elseif ($this->status === 'belum') {
@@ -73,6 +82,7 @@ class LaporanExport implements FromArray, WithStyles, WithEvents
 
                   ->orWhereHas('jawabanTracer', function ($sub) {
                       $sub->whereNull('submitted_at');
+                      if ($this->idPeriode) $sub->where('id_periode', $this->idPeriode);
                   });
 
             });

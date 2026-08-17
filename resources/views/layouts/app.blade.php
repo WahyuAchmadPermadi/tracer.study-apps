@@ -24,7 +24,8 @@
     $pageIcons = [
         'Dashboard' => 'bi-speedometer2',
         'Data Alumni' => 'bi-people-fill',
-        'Jawaban Tracer' => 'bi-journal-check',
+        'Program Studi' => 'bi-mortarboard-fill',
+        'Hasil Tracer Study' => 'bi-journal-check',
         'Reminder' => 'bi-bell-fill',
         'Laporan' => 'bi-file-earmark-bar-graph-fill',
         'Summary' => 'bi-pie-chart-fill',
@@ -63,6 +64,10 @@
         <div class="page-content">
             @yield('content')
         </div>
+
+        <footer class="border-top py-3 text-center text-muted small">
+            © 2026 Wahyu Achmad Permadi - NIM T0122011
+        </footer>
 
     </main>
 

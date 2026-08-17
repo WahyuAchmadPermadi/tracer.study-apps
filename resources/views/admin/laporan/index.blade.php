@@ -23,6 +23,16 @@
             <div class="row align-items-end">
 
                 <div class="col-md-3">
+                    <label>Periode Tracer Study</label>
+                    <select name="id_periode" class="form-select">
+                        <option value="">Semua Periode</option>
+                        @foreach($periode as $item)
+                            <option value="{{ $item->id_periode }}" @selected((string) request('id_periode') === (string) $item->id_periode)>{{ $item->tahun }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
                     <label>Tahun Lulus</label>
                     <select name="tahun_lulus" class="form-select">
                         <option value="">Semua</option>
@@ -35,7 +45,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label>Program Studi</label>
                     <select name="program_studi" class="form-select">
                         <option value="">Semua</option>
@@ -48,7 +58,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label>Status</label>
                     <select name="status" class="form-select">
                         <option value="">Semua</option>

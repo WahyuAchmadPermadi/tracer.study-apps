@@ -7,19 +7,6 @@ use App\Models\JawabanTracer;
 
 class Alumni extends Model
 {
-    public const PROGRAM_STUDIS = [
-        '54201' => 'Agribisnis',
-        '54211' => 'Agroteknologi',
-        '54242' => 'Manajemen Sumber Daya Perairan',
-        '54244' => 'Teknologi Hasil Perikanan',
-        '57201' => 'Sistem Informasi',
-        '61201' => 'Manajemen',
-        '84202' => 'Pendidikan Matematika',
-        '86206' => 'Pendidikan Guru Sekolah Dasar',
-        '88203' => 'Pendidikan Bahasa Inggris',
-        '352045' => 'Teknik Lingkungan',
-    ];
-
     protected $table = 'alumnis';
 
     protected $primaryKey = 'nim';
@@ -47,17 +34,64 @@ class Alumni extends Model
         return $this->hasOne(JawabanTracer::class, 'nim', 'nim');
     }
 
+    public function jawabanTracers()
+    {
+        return $this->hasMany(JawabanTracer::class, 'nim', 'nim');
+    }
+
     public static function kodeProgramStudiDariNama(?string $programStudi): ?string
     {
         $programStudi = trim((string) $programStudi);
 
-        foreach (self::PROGRAM_STUDIS as $kode => $nama) {
-            if ($programStudi === $nama || $programStudi === "{$kode} - {$nama}") {
-                return $kode;
-            }
+        return ProgramStudi::query()
+            ->where('nama_program_studi', $programStudi)
+            ->value('kode_program_studi');
+    }
+
+    /**
+     * Menormalisasi nomor HP Indonesia ke format E.164 +628xxxxxxxxxx.
+     *
+     * Format yang dapat diterima untuk import: 08..., 62..., +62..., atau 8....
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function normalizeNoHp(mixed $noHp): string
+    {
+        if (is_float($noHp)) {
+            $noHp = number_format($noHp, 0, '', '');
         }
 
-        return null;
+        $noHp = trim((string) $noHp);
+
+        if (!preg_match('/^\+?\d+$/', $noHp)) {
+            throw new \InvalidArgumentException('Nomor HP hanya boleh berisi angka, dengan tanda + hanya di awal nomor.');
+        }
+
+        $digits = ltrim($noHp, '+');
+
+        if (str_starts_with($digits, '0')) {
+            $digits = substr($digits, 1);
+        } elseif (str_starts_with($digits, '62')) {
+            $digits = substr($digits, 2);
+        }
+
+        if (!preg_match('/^8\d{7,12}$/', $digits)) {
+            throw new \InvalidArgumentException('Nomor HP harus merupakan nomor Indonesia yang valid, misalnya 89612345678.');
+        }
+
+        return '+62'.$digits;
+    }
+
+    /**
+     * Menghasilkan nomor untuk field form yang sudah memiliki prefix +62.
+     */
+    public static function noHpUntukInput(?string $noHp): string
+    {
+        try {
+            return substr(self::normalizeNoHp($noHp), 3);
+        } catch (\InvalidArgumentException) {
+            return preg_replace('/\D/', '', (string) $noHp) ?? '';
+        }
     }
 
     /**
@@ -70,34 +104,18 @@ class Alumni extends Model
         $kodeProgramStudi = trim((string) $kodeProgramStudi);
         $programStudi = trim((string) $programStudi);
 
-        if ($kodeProgramStudi !== '') {
-            if (!array_key_exists($kodeProgramStudi, self::PROGRAM_STUDIS)) {
-                throw new \InvalidArgumentException('Kode program studi tidak terdaftar.');
-            }
+        $program = ProgramStudi::aktif()
+            ->when($kodeProgramStudi !== '', fn ($query) => $query->where('kode_program_studi', $kodeProgramStudi))
+            ->when($kodeProgramStudi === '', fn ($query) => $query->where('nama_program_studi', $programStudi))
+            ->first();
 
-            $namaResmi = self::PROGRAM_STUDIS[$kodeProgramStudi];
-
-            if ($programStudi !== ''
-                && $programStudi !== $namaResmi
-                && $programStudi !== "{$kodeProgramStudi} - {$namaResmi}") {
-                throw new \InvalidArgumentException('Kode dan nama program studi tidak sesuai.');
-            }
-
-            return [
-                'kode_program_studi' => $kodeProgramStudi,
-                'program_studi' => $namaResmi,
-            ];
-        }
-
-        $kodeDariNama = self::kodeProgramStudiDariNama($programStudi);
-
-        if (!$kodeDariNama) {
-            throw new \InvalidArgumentException('Program studi tidak terdaftar.');
+        if (!$program || ($programStudi !== '' && $programStudi !== $program->nama_program_studi && $programStudi !== "{$program->kode_program_studi} - {$program->nama_program_studi}")) {
+            throw new \InvalidArgumentException('Program studi tidak terdaftar atau tidak aktif.');
         }
 
         return [
-            'kode_program_studi' => $kodeDariNama,
-            'program_studi' => self::PROGRAM_STUDIS[$kodeDariNama],
+            'kode_program_studi' => $program->kode_program_studi,
+            'program_studi' => $program->nama_program_studi,
         ];
     }
 }

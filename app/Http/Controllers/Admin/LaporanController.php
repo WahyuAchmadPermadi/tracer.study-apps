@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alumni;
+use App\Models\PeriodeTracer;
 use Illuminate\Http\Request;
 use App\Exports\LaporanExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -31,10 +32,12 @@ class LaporanController extends Controller
             ->pluck('program_studi');
 
         $laporan = collect();
+        $periode = PeriodeTracer::query()->orderByDesc('tahun')->get();
 
         return view('admin.laporan.index', compact(
             'tahun',
             'prodi',
+            'periode',
             'laporan'
         ));
     }
@@ -49,7 +52,8 @@ class LaporanController extends Controller
         $query = $this->queryLaporan(
             $request->tahun_lulus,
             $request->program_studi,
-            $request->status
+            $request->status,
+            $request->id_periode
         );
 
         $laporan = $query
@@ -61,6 +65,7 @@ class LaporanController extends Controller
             'laporan.tahun_lulus'   => $request->tahun_lulus,
             'laporan.program_studi' => $request->program_studi,
             'laporan.status'        => $request->status,
+            'laporan.id_periode'    => $request->id_periode,
         ]);
 
         $tahun = Alumni::select('tahun_lulus')
@@ -74,11 +79,13 @@ class LaporanController extends Controller
             ->distinct()
             ->orderBy('program_studi')
             ->pluck('program_studi');
+        $periode = PeriodeTracer::query()->orderByDesc('tahun')->get();
 
         return view('admin.laporan.index', compact(
             'laporan',
             'tahun',
             'prodi'
+            ,'periode'
         ));
     }
 
@@ -90,9 +97,16 @@ class LaporanController extends Controller
     private function queryLaporan(
         $tahunLulus = null,
         $programStudi = null,
-        $status = null
+        $status = null,
+        $idPeriode = null
     ) {
-        $query = Alumni::with('jawabanTracer');
+        $jawabanScope = function ($query) use ($idPeriode) {
+            if ($idPeriode) {
+                $query->where('id_periode', $idPeriode);
+            }
+        };
+
+        $query = Alumni::with(['jawabanTracer' => $jawabanScope]);
 
         if (!empty($tahunLulus)) {
             $query->where('tahun_lulus', $tahunLulus);
@@ -104,14 +118,16 @@ class LaporanController extends Controller
 
         if ($status === 'sudah') {
 
-            $query->whereHas('jawabanTracer', function ($q) {
+            $query->whereHas('jawabanTracer', function ($q) use ($idPeriode) {
                 $q->whereNotNull('submitted_at');
+                if ($idPeriode) $q->where('id_periode', $idPeriode);
             });
 
         } elseif ($status === 'belum') {
 
-            $query->whereDoesntHave('jawabanTracer', function ($q) {
+            $query->whereDoesntHave('jawabanTracer', function ($q) use ($idPeriode) {
                 $q->whereNotNull('submitted_at');
+                if ($idPeriode) $q->where('id_periode', $idPeriode);
             });
         }
 
@@ -129,7 +145,8 @@ class LaporanController extends Controller
             new LaporanExport(
                 session('laporan.tahun_lulus'),
                 session('laporan.program_studi'),
-                session('laporan.status')
+                session('laporan.status'),
+                session('laporan.id_periode')
             ),
             'Laporan_Tracer_Study_' . date('Y-m-d') . '.xlsx'
         );
@@ -145,11 +162,13 @@ class LaporanController extends Controller
         $tahunLulus   = session('laporan.tahun_lulus');
         $programStudi = session('laporan.program_studi');
         $status       = session('laporan.status');
+        $idPeriode    = session('laporan.id_periode');
 
         $alumni = $this->queryLaporan(
             $tahunLulus,
             $programStudi,
-            $status
+            $status,
+            $idPeriode
         )
         ->orderBy('tahun_lulus', 'desc')
         ->orderBy('nama')
@@ -175,6 +194,7 @@ class LaporanController extends Controller
             'tahun'         => $tahunLulus,
             'prodi'         => $programStudi,
             'status'        => $status,
+            'idPeriode'     => $idPeriode,
             'totalAlumni'   => $totalAlumni,
             'sudahMengisi'  => $sudahMengisi,
             'belumMengisi'  => $belumMengisi,

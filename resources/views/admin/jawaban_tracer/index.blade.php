@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Jawaban Tracer')
+@section('title', 'Hasil Tracer Study')
 
 @section('content')
 
@@ -13,7 +13,7 @@
             <div>
                 <h4 class="mb-0">
                     <i class="bi bi-clipboard-check"></i>
-                    Jawaban Tracer Alumni
+                    Hasil Tracer Study Alumni
                 </h4>
             </div>
 
@@ -48,6 +48,15 @@
             </div>
 
             <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                <select name="id_periode" class="form-select" style="width: 180px;">
+                    <option value="">Semua Periode</option>
+                    @foreach($periodeOptions as $periode)
+                        <option value="{{ $periode->id_periode }}" @selected((string) $idPeriode === (string) $periode->id_periode)>
+                            {{ $periode->tahun }}
+                        </option>
+                    @endforeach
+                </select>
+
                 <select name="tahun_lulus" class="form-select" style="width: 180px;">
                     <option value="">Semua Tahun</option>
                     @foreach($tahunLulusOptions as $tahun)
@@ -205,7 +214,7 @@
                                 <i class="bi bi-inbox fs-3 d-block mb-2"></i>
 
                                 Belum ada alumni yang mengirim
-                                jawaban tracer study.
+                                hasil tracer study.
 
                             </td>
 
