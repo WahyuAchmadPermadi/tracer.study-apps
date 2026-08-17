@@ -18,7 +18,7 @@ class JawabanTracerController extends Controller
         $programStudi = $request->query('program_studi');
         $idPeriode = $request->query('id_periode');
 
-        $programStudis = ProgramStudi::query()->orderBy('nama_program_studi')->pluck('nama_program_studi');
+        $programStudis = ProgramStudi::query()->orderBy('nama_program_studi')->pluck('nama_program_studi')->all();
         $periodeOptions = PeriodeTracer::query()->orderByDesc('tahun')->get();
 
         if (!in_array($programStudi, $programStudis, true)) {
