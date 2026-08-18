@@ -22,7 +22,7 @@
 
             <div class="row align-items-end">
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label>Periode Tracer Study</label>
                     <select name="id_periode" class="form-select">
                         <option value="">Semua Periode</option>
@@ -32,7 +32,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label>Tahun Lulus</label>
                     <select name="tahun_lulus" class="form-select">
                         <option value="">Semua</option>
@@ -45,7 +45,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <label>Program Studi</label>
                     <select name="program_studi" class="form-select">
                         <option value="">Semua</option>
@@ -74,7 +74,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-search"></i> Tampilkan
                     </button>
